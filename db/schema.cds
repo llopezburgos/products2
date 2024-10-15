@@ -1,6 +1,6 @@
 namespace com.sapas;
 
-type Name               : String(50);
+type Name : String(50);
 
 // Tipo estructurado
 type Address {
@@ -26,7 +26,7 @@ type Address {
 // entity Emails {
 //     email_01 : EmailsAddresses_01; // Array
 //     email_02 : many EmailsAddresses_02; // Estructurado que con many se convierte en array
-//     email_03 : many { 
+//     email_03 : many {
 //             kind  : String;
 //             email : String;
 //     } // Otra forma para representar un array
@@ -52,14 +52,22 @@ type Address {
 //     }
 // }
 
-type Dec : Decimal(16, 2);
+// entity Car {
+//     key ID                 : UUID;
+//         name               : String;
+//         virtual discount_1 : Decimal;
+//         @Core.Computed : false
+//         virtual discount_2 : Decimal;
+// }
+
+type Dec  : Decimal(16, 2);
 
 entity Products {
     key ID               : UUID;
-        Name             : String;
+        Name             : String not null;
         Description      : String;
         ImageUrl         : String;
-        ReleaseDate      : DateTime;
+        ReleaseDate      : DateTime default $now; //DateTime;
         DiscontinuedDate : DateTime;
         Price            : Dec; //Decimal(16, 2);
         Height           : type of Price; //Decimal(16, 2);
@@ -70,7 +78,7 @@ entity Products {
 
 entity Suppliers {
     key ID         : UUID;
-        Name       : type of Products:Name; //String;
+        Name       : type of Products : Name; //String;
         Street     : String;
         City       : String;
         State      : String(2);
