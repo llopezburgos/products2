@@ -9,6 +9,8 @@ service CatalogService {
     //entity ProductReviews as projection on sapas.ProductReviews;
     //entity SalesData as projection on sapas.SalesData;
     //entity StockAvailability as projection on sapas.StockAvailability;
-    //entity Suppliers as projection on sapas.Suppliers;
+    entity Suppliers as projection on sapas.Suppliers;
+    entity Suppliers_01 as projection on sapas.Suppliers_01;
+    entity Suppliers_02 as projection on sapas.Suppliers_02;
     //entity UnitOfMeasures as projection on sapas.UnitOfMeasures;
 }
