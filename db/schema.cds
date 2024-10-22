@@ -1,5 +1,8 @@
 namespace com.sapas;
 
+using { cuid } from '@sap/cds/common';
+
+
 type Name : String(50);
 
 // Tipo estructurado
@@ -62,8 +65,8 @@ type Address {
 
 type Dec  : Decimal(16, 2);
 
-entity Products {
-    key ID               : UUID;
+entity Products: cuid {
+    //key ID               : UUID;
         Name             : String not null;
         Description      : String;
         ImageUrl         : String;
@@ -74,6 +77,20 @@ entity Products {
         Width            : Decimal(16, 2);
         Depth            : Decimal(16, 2);
         Quantity         : Decimal(16, 2);
+        // Supplier_Id       : UUID;
+        // ToSupplier        : Association to one Suppliers
+        //                         on ToSupplier.ID = Supplier_Id;
+        // UnitOfMeasures_ID : String(2);
+        // ToUnitOfMeasure   : Association to UnitOfMeasures
+        //                         on ToUnitOfMeasure.ID = UnitOfMeasures_ID;
+
+        Supplier         : Association to one Suppliers;
+        UnitOfMeasure    : Association to UnitOfMeasures;
+        Currency         : Association to Currencies;
+        DimensionUnit    : Association to DimensionUnits;
+        //Category         : Association to Categories;
+        ToSalesData      : Association to many SalesData
+                               on ToSalesData.Products = $self;
 };
 
 entity Suppliers {
@@ -87,6 +104,8 @@ entity Suppliers {
         Email      : String;
         Phone      : String;
         Fax        : String;
+        Product    : Association to many Products
+                         on Product.Supplier = $self;
 
 };
 
@@ -116,11 +135,9 @@ entity Suppliers_02 {
 
 };
 
-entity Categories {
+entity Categories{
     key ID   : String(1);
         Name : String;
-
-
 };
 
 entity StockAvailability {
@@ -162,4 +179,103 @@ entity SalesData {
     key ID           : UUID;
         DeliveryDate : DateTime;
         Revenue      : Decimal(16, 2);
+        Products     : Association to Products;
 };
+
+/*
+Entidades Select
+*/
+entity SelProducts   as select from Products; //Es como si fuera una vista
+
+entity SelProducts1  as
+    select from Products {
+        *
+    };
+
+entity SelProducts2  as
+    select from Products {
+        Name,
+        Price,
+        Quantity
+    };
+
+entity SelProducts3  as
+    select from Products
+    left join ProductReviews
+        on Products.Name = ProductReviews.Name
+    {
+        ProductReviews.Rating,
+        Products.Name,
+        sum(Price) as TotalPrice
+    }
+    group by
+        Rating,
+        Products.Name
+    order by
+        Rating;
+
+/*
+Entidades Projection
+*/
+entity ProjProducts  as projection on Products;
+
+entity ProjProducts2 as
+    projection on Products {
+        *
+    };
+
+entity ProjProducts3 as
+    projection on Products {
+        ReleaseDate,
+        Name
+    };
+
+// entity ParamProducts(pName : String)     as
+//     select
+//         Name,
+//         Price,
+//         Quantity
+//     from Products
+//     where
+//         Name = :pName;
+
+// entity ProjParamProducts(pName : String) as projection on Products where Name = :pName;
+
+extend Products with {
+    PriceCondition     : String(2);
+    PriceDetermination : String(3);
+}
+
+entity Course {
+    key ID      : UUID;
+        Student : Association to many StudentCourse
+                      on Student.Course = $self;
+}
+
+entity Student {
+    key ID     : UUID;
+        Course : Association to many StudentCourse
+                     on Course.Student = $self;
+}
+
+entity StudentCourse {
+    key ID      : UUID;
+        Student : Association to Student;
+        Course  : Association to Course;
+}
+
+
+entity Orders {
+    key ID       : UUID;
+        Date     : Date;
+        Customer : String;
+        Item     : Composition of many OrderItems
+                       on Item.Order = $self;
+}
+
+entity OrderItems {
+    key ID      : UUID;
+        Order   : Association to Orders;
+        Product : Association to Products;
+
+}
