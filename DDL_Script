@@ -1,6 +1,10 @@
 
 CREATE TABLE com_sapas_Products (
   ID NVARCHAR(36) NOT NULL,
+  createdAt TIMESTAMP_TEXT,
+  createdBy NVARCHAR(255),
+  modifiedAt TIMESTAMP_TEXT,
+  modifiedBy NVARCHAR(255),
   Name NVARCHAR(255) NOT NULL,
   Description NVARCHAR(255),
   ImageUrl NVARCHAR(255),
@@ -13,6 +17,8 @@ CREATE TABLE com_sapas_Products (
   Quantity DECIMAL(16, 2),
   Supplier_ID NVARCHAR(36),
   UnitOfMeasure_ID NVARCHAR(2),
+  Currency_ID NVARCHAR(3),
+  DimensionUnit_ID NVARCHAR(2),
   PriceCondition NVARCHAR(2),
   PriceDetermination NVARCHAR(3),
   PRIMARY KEY(ID)
@@ -111,11 +117,47 @@ CREATE TABLE com_sapas_SalesData (
   ID NVARCHAR(36) NOT NULL,
   DeliveryDate DATETIME_TEXT,
   Revenue DECIMAL(16, 2),
+  Products_ID NVARCHAR(36),
+  PRIMARY KEY(ID)
+);
+
+CREATE TABLE com_sapas_Course (
+  ID NVARCHAR(36) NOT NULL,
+  PRIMARY KEY(ID)
+);
+
+CREATE TABLE com_sapas_Student (
+  ID NVARCHAR(36) NOT NULL,
+  PRIMARY KEY(ID)
+);
+
+CREATE TABLE com_sapas_StudentCourse (
+  ID NVARCHAR(36) NOT NULL,
+  Student_ID NVARCHAR(36),
+  Course_ID NVARCHAR(36),
+  PRIMARY KEY(ID)
+);
+
+CREATE TABLE com_sapas_Orders (
+  ID NVARCHAR(36) NOT NULL,
+  Date DATE_TEXT,
+  Customer NVARCHAR(255),
+  PRIMARY KEY(ID)
+);
+
+CREATE TABLE com_sapas_OrderItems (
+  ID NVARCHAR(36) NOT NULL,
+  Order_ID NVARCHAR(36),
+  Product_ID NVARCHAR(36),
   PRIMARY KEY(ID)
 );
 
 CREATE VIEW com_sapas_SelProducts AS SELECT
   Products_0.ID,
+  Products_0.createdAt,
+  Products_0.createdBy,
+  Products_0.modifiedAt,
+  Products_0.modifiedBy,
   Products_0.Name,
   Products_0.Description,
   Products_0.ImageUrl,
@@ -128,12 +170,18 @@ CREATE VIEW com_sapas_SelProducts AS SELECT
   Products_0.Quantity,
   Products_0.Supplier_ID,
   Products_0.UnitOfMeasure_ID,
+  Products_0.Currency_ID,
+  Products_0.DimensionUnit_ID,
   Products_0.PriceCondition,
   Products_0.PriceDetermination
 FROM com_sapas_Products AS Products_0;
 
 CREATE VIEW com_sapas_SelProducts1 AS SELECT
   Products_0.ID,
+  Products_0.createdAt,
+  Products_0.createdBy,
+  Products_0.modifiedAt,
+  Products_0.modifiedBy,
   Products_0.Name,
   Products_0.Description,
   Products_0.ImageUrl,
@@ -146,6 +194,8 @@ CREATE VIEW com_sapas_SelProducts1 AS SELECT
   Products_0.Quantity,
   Products_0.Supplier_ID,
   Products_0.UnitOfMeasure_ID,
+  Products_0.Currency_ID,
+  Products_0.DimensionUnit_ID,
   Products_0.PriceCondition,
   Products_0.PriceDetermination
 FROM com_sapas_Products AS Products_0;
@@ -166,6 +216,10 @@ ORDER BY Rating;
 
 CREATE VIEW com_sapas_ProjProducts AS SELECT
   Products_0.ID,
+  Products_0.createdAt,
+  Products_0.createdBy,
+  Products_0.modifiedAt,
+  Products_0.modifiedBy,
   Products_0.Name,
   Products_0.Description,
   Products_0.ImageUrl,
@@ -178,12 +232,18 @@ CREATE VIEW com_sapas_ProjProducts AS SELECT
   Products_0.Quantity,
   Products_0.Supplier_ID,
   Products_0.UnitOfMeasure_ID,
+  Products_0.Currency_ID,
+  Products_0.DimensionUnit_ID,
   Products_0.PriceCondition,
   Products_0.PriceDetermination
 FROM com_sapas_Products AS Products_0;
 
 CREATE VIEW com_sapas_ProjProducts2 AS SELECT
   Products_0.ID,
+  Products_0.createdAt,
+  Products_0.createdBy,
+  Products_0.modifiedAt,
+  Products_0.modifiedBy,
   Products_0.Name,
   Products_0.Description,
   Products_0.ImageUrl,
@@ -196,6 +256,8 @@ CREATE VIEW com_sapas_ProjProducts2 AS SELECT
   Products_0.Quantity,
   Products_0.Supplier_ID,
   Products_0.UnitOfMeasure_ID,
+  Products_0.Currency_ID,
+  Products_0.DimensionUnit_ID,
   Products_0.PriceCondition,
   Products_0.PriceDetermination
 FROM com_sapas_Products AS Products_0;

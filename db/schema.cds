@@ -1,7 +1,9 @@
 namespace com.sapas;
 
-using { cuid } from '@sap/cds/common';
-
+using {
+    cuid,
+    managed
+} from '@sap/cds/common';
 
 type Name : String(50);
 
@@ -12,90 +14,70 @@ type Address {
     State      : String(2);
     PostalCode : String(5);
     Country    : String(3);
-}
-
-// // Tipo matriz o array
-// type EmailsAddresses_01 : array of {
-//     kind  : String;
-//     email : String;
-// }
-
-// // Tipo estructurado que luego se convierte en array más adelante
-// type EmailsAddresses_02 {
-//     kind  : String;
-//     email : String;
-// }
-
-// entity Emails {
-//     email_01 : EmailsAddresses_01; // Array
-//     email_02 : many EmailsAddresses_02; // Estructurado que con many se convierte en array
-//     email_03 : many {
-//             kind  : String;
-//             email : String;
-//     } // Otra forma para representar un array
-// }
-
-// type Gender: String enum { //Op. 1: Limitamos a male y female
-//     male;
-//     female;
-// };
-
-// entity Order {
-//     clientgender : Gender;
-//     status: Integer enum{ //Op. 2: Le decimos que si entra un 1 va a ser submitted
-//         submitted = 1;
-//         fulfiller = 2;
-//         shipped = 3;
-//         cancel = -1;
-//     };
-//     priority : String @assert.range enum { // Op. 3: Limitamos a high, medium y low pero sin cambiar el tipo de dato
-//         high;
-//         medium;
-//         low;
-//     }
-// }
-
-// entity Car {
-//     key ID                 : UUID;
-//         name               : String;
-//         virtual discount_1 : Decimal;
-//         @Core.Computed : false
-//         virtual discount_2 : Decimal;
-// }
+};
 
 type Dec  : Decimal(16, 2);
 
-entity Products: cuid {
-    //key ID               : UUID;
-        Name             : String not null;
-        Description      : String;
-        ImageUrl         : String;
-        ReleaseDate      : DateTime default $now; //DateTime;
-        DiscontinuedDate : DateTime;
-        Price            : Dec; //Decimal(16, 2);
-        Height           : type of Price; //Decimal(16, 2);
-        Width            : Decimal(16, 2);
-        Depth            : Decimal(16, 2);
-        Quantity         : Decimal(16, 2);
-        // Supplier_Id       : UUID;
-        // ToSupplier        : Association to one Suppliers
-        //                         on ToSupplier.ID = Supplier_Id;
-        // UnitOfMeasures_ID : String(2);
-        // ToUnitOfMeasure   : Association to UnitOfMeasures
-        //                         on ToUnitOfMeasure.ID = UnitOfMeasures_ID;
+context materials {
+    entity Products : cuid, managed {
+        key ID               : UUID;
+            Name             : String not null;
+            Description      : String;
+            ImageUrl         : String;
+            ReleaseDate      : Timestamp default $now;
+            DiscontinuedDate : DateTime;
+            Price            : Dec; //Decimal(16, 2);
+            Height           : type of Price; //Decimal(16, 2);
+            Width            : Decimal(16, 2);
+            Depth            : Decimal(16, 2);
+            Quantity         : Decimal(16, 2);
+            // Supplier_Id       : UUID;
+            // ToSupplier        : Association to one Suppliers
+            //                         on ToSupplier.ID = Supplier_Id;
+            // UnitOfMeasures_ID : String(2);
+            // ToUnitOfMeasure   : Association to UnitOfMeasures
+            //                         on ToUnitOfMeasure.ID = UnitOfMeasures_ID;
 
-        Supplier         : Association to one Suppliers;
-        UnitOfMeasure    : Association to UnitOfMeasures;
-        Currency         : Association to Currencies;
-        DimensionUnit    : Association to DimensionUnits;
-        //Category         : Association to Categories;
-        ToSalesData      : Association to many SalesData
-                               on ToSalesData.Products = $self;
-};
+            Supplier         : Association to one Suppliers;
+            UnitOfMeasure    : Association to UnitOfMeasures;
+            Currency         : Association to Currencies;
+            DimensionUnit    : Association to DimensionUnits;
+            //Category         : Association to Categories;
+            ToSalesData      : Association to many SalesData
+                                   on ToSalesData.Products = $self;
+    };
+
+
+    entity Categories {
+        key ID   : String(1);
+            Name : String;
+    };
+
+    entity StockAvailability {
+        key ID          : Integer;
+            Description : String;
+    };
+
+    entity Currencies {
+        key ID          : String(3);
+            Description : localized String;
+    };
+
+    entity UnitOfMeasures {
+        key ID          : String(2);
+            Description : String;
+    };
+
+    entity DimensionUnits {
+        key ID          : String(2);
+            Description : String;
+    };
+
+}
 
 entity Suppliers {
     key ID         : UUID;
-        Name       : type of Products : Name; //String;
+        Name       : type of materials.Products : Name; //String;
         Street     : String;
         City       : String;
         State      : String(2);
@@ -104,7 +86,7 @@ entity Suppliers {
         Email      : String;
         Phone      : String;
         Fax        : String;
-        Product    : Association to many Products
+        Product    : Association to many materials.Products
                          on Product.Supplier = $self;
 
 };
@@ -135,30 +117,6 @@ entity Suppliers_02 {
 
 };
 
-entity Categories{
-    key ID   : String(1);
-        Name : String;
-};
-
-entity StockAvailability {
-    key ID          : Integer;
-        Description : String;
-};
-
-entity Currencies {
-    key ID          : String(3);
-        Description : String;
-};
-
-entity UnitOfMeasures {
-    key ID          : String(2);
-        Description : String;
-};
-
-entity DimensionUnits {
-    key ID          : String(2);
-        Description : String;
-};
 
 entity Months {
     key ID               : String(2);
@@ -179,28 +137,28 @@ entity SalesData {
     key ID           : UUID;
         DeliveryDate : DateTime;
         Revenue      : Decimal(16, 2);
-        Products     : Association to Products;
+        Products     : Association to materials.Products;
 };
 
 /*
 Entidades Select
 */
-entity SelProducts   as select from Products; //Es como si fuera una vista
+entity SelProducts   as select from materials.Products; //Es como si fuera una vista
 
 entity SelProducts1  as
-    select from Products {
+    select from materials.Products {
         *
     };
 
 entity SelProducts2  as
-    select from Products {
+    select from materials.Products {
         Name,
         Price,
         Quantity
     };
 
 entity SelProducts3  as
-    select from Products
+    select from materials.Products
     left join ProductReviews
         on Products.Name = ProductReviews.Name
     {
@@ -217,16 +175,16 @@ entity SelProducts3  as
 /*
 Entidades Projection
 */
-entity ProjProducts  as projection on Products;
+entity ProjProducts  as projection on materials.Products;
 
 entity ProjProducts2 as
-    projection on Products {
+    projection on materials.Products {
         *
     };
 
 entity ProjProducts3 as
-    projection on Products {
-        ReleaseDate,
+    projection on materials.Products {
+        //ReleaseDate,
         Name
     };
 
@@ -241,7 +199,7 @@ entity ProjProducts3 as
 
 // entity ProjParamProducts(pName : String) as projection on Products where Name = :pName;
 
-extend Products with {
+extend materials.Products with {
     PriceCondition     : String(2);
     PriceDetermination : String(3);
 }
@@ -276,6 +234,35 @@ entity Orders {
 entity OrderItems {
     key ID      : UUID;
         Order   : Association to Orders;
-        Product : Association to Products;
+        Product : Association to materials.Products;
+
+}
+
+/* Agrupaciones */
+
+entity AveragePrice as 
+select from sapas.materials.Products {
+ Products.ID as ProductId,
+ avg( Price ) as AveragePrice : Decimal (16,2) }
+ group by
+ Products.ID;
+
+
+/* MIXIN */
+entity Products2 as 
+select from sapas.materials.Products
+mixin {
+    ToStockAvailibility : Association to sapas.materials.StockAvailability
+    on ToStockAvailibility.ID = $projection.ID;
+}
+
+into {
+    *,
+    ToStockAvailibility.Description as Description,
+    case
+    when Quantity >=8 then 'Paco'
+    when Quantity >0 then 'Manolo'
+    else 'Rodolfo'
+    end as StockAvailability : String
 
 }
