@@ -1,0 +1,31 @@
+### GET Orders
+
+GET http://localhost:4004/odata/v4/manage-orders/GetOrders
+
+### GET Orders with filters
+
+GET http://localhost:4004/odata/v4/manage-orders/GetOrders('client1@client1.com')
+
+### POST Orders
+
+POST http://localhost:4004/odata/v4/manage-orders/CreateOrders HTTP/1.1
+Content-Type: application/json
+
+{
+    "ClientEmail": "client1@client5.com" ,
+    "FirstName": "Paco",
+    "LastName": "Blancas Nieves",
+    "CreatedOn": "2022-10-24"
+}
+
+### PUT Orders
+PUT http://localhost:4004/odata/v4/manage-orders/UpdateOrders('client1@client1.com') HTTP/1.1
+Content-Type: application/json
+
+{
+    "FirstName": "Manolo",
+    "LastName": "Fernandez Dominguez"
+}
+
+### DELETE Orders
+DELETE http://localhost:4004/odata/v4/manage-orders/DeleteOrders('client1@client5.com')

@@ -42,7 +42,7 @@ define service CatalogService {
             Comment
         };
 
-/* Proyecciones con Postfix*/
+    /* Proyecciones con Postfix*/
     entity VH_DimensionUnits as
         select
             ID          as Code,
@@ -53,65 +53,75 @@ define service CatalogService {
 /* Expresiones de Ruta ==> Name */
 define service MyService {
 
-    entity SuppliersProduct as select from sapas.materials.Products[Name = 'Bread']{
-        *,
-        Name,
-        Description,
-        Supplier.City
-    }
-/* Expresiones de Ruta ==> Where*/
-    entity SuppliersProduct2 as select from sapas.materials.Products{
-        *,
-        Name,
-        Description,
-        Supplier.City
-    } where Supplier.City = 'Sammamish';
+    entity SuppliersProduct  as
+        select from sapas.materials.Products[Name = 'Bread']{
+            *,
+            Name,
+            Description,
+            Supplier.City
+        }
 
-/* Filtros Infix ==> Primera forma*/
-    entity EntityInfix as select 
-        Supplier[Name = 'Exotic Liquids'].Phone
-    from sapas.materials.Products
-    where Products.Name = 'Bread';
+    /* Expresiones de Ruta ==> Where*/
+    entity SuppliersProduct2 as
+        select from sapas.materials.Products {
+            *,
+            Name,
+            Description,
+            Supplier.City
+        }
+        where
+            Supplier.City = 'Sammamish';
 
-/* Filtros Infix ==> Segunda forma*/
-    entity EntityJoin as
-    select Phone from sapas.materials.Products
-    left join sapas.Suppliers as supp
-    on (
-        supp.ID = Products.Supplier.ID
-    )
-    and supp.Name = 'Exotic Liquids'
-    where 
-    Products.Name = 'Bread';
+    /* Filtros Infix ==> Primera forma*/
+    entity EntityInfix       as
+        select Supplier[Name = 'Exotic Liquids'].Phone from sapas.materials.Products
+        where
+            Products.Name = 'Bread';
 
-/* Agrupaciones*/
+    /* Filtros Infix ==> Segunda forma*/
+    entity EntityJoin        as
+        select Phone from sapas.materials.Products
+        left join sapas.Suppliers as supp
+            on(
+                supp.ID = Products.Supplier.ID
+            )
+            and supp.Name = 'Exotic Liquids'
+        where
+            Products.Name = 'Bread';
 
-// Ir a schema. cds
+    /* Agrupaciones*/
 
-entity AveragePrice as projection on sapas.AveragePrice;
+    // Ir a schema. cds
 
+    entity AveragePrice      as projection on sapas.AveragePrice;
+    /* MIXIN */
+    entity Products2         as projection on sapas.Products2;
 
-/* MIXIN */
-entity Products2 as projection on sapas.Products2;
+    /* Casting */
+    entity EntityCasting     as
+        select
+            cast(
+                Price as      Integer
+            )     as Price,
+            Price as Price2 : Integer
+        from sapas.materials.Products;
 
-/* Casting */
-entity EntityCasting as 
- select 
-    cast (Price as Integer) as Price,
-    Price as Price2 : Integer
- from sapas.materials.Products;
-
- /* Exits */
-entity EntityExists as
-select from sapas.materials.Products {
-    Name
-} where exists Supplier[Name = 'Exotic Liquids'];
+    /* Exits */
+    entity EntityExists      as
+        select from sapas.materials.Products {
+            Name
+        }
+        where
+            exists Supplier[Name = 'Exotic Liquids'];
 
 }
 
 
+/*define service ConsultasEmbebidas {
 
 
+
+}*/
 
 
 // service CatalogService {
