@@ -124,14 +124,14 @@ define service MyService {
 }*/
 
 
-// service CatalogService {
-//     entity Products as projection on sapas.materials.Products;
+ service CatalogService2 {
+     entity Products as projection on sapas.materials.Products;
 //     entity Categories as projection on sapas.materials.Categories;
 //     entity Currencies as projection on sapas.materials.Currencies;
 //     //entity DimensionUnits as projection on sapas.DimensionUnits;
 //     //entity Months as projection on sapas.Months;
 //     //entity ProductReviews as projection on sapas.ProductReviews;
-//     entity SalesData as projection on sapas.SalesData;
+     entity SalesData as projection on sapas.SalesData;
 //     //entity StockAvailability as projection on sapas.StockAvailability;
 //     entity Suppliers as projection on sapas.Suppliers;
 //     //entity Suppliers_01 as projection on sapas.Suppliers_01;
@@ -146,4 +146,4 @@ define service MyService {
 //     entity OrderItems      as projection on sapas.OrderItems;
 
 
-// }
+ }

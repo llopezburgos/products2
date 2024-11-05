@@ -1,5 +1,20 @@
 namespace com.training;
 
+using { Country } from '@sap/cds/common';
+
+
+/* Consultas embebidas : OnRead*/
+entity Orders {
+    key ClientEmail : String(65);
+    FirstName   : String(30);
+    LastName    : String(30);
+    CreatedOn   : Date;
+    Reviewed    : Boolean;
+    Approved    : Boolean;
+    Country : Country;
+    Status : String(1); // Este campo solo para acción
+}
+
 // // Tipo matriz o array
 // type EmailsAddresses_01 : array of {
 //     kind  : String;
@@ -49,12 +64,4 @@ namespace com.training;
 //         virtual discount_2 : Decimal;
 // }
 
-/* Consultas embebidas : OnRead*/
-entity Orders {
-    key ClientEmail : String(65);
-    FirstName   : String(30);
-    LastName    : String(30);
-    CreatedOn   : Date;
-    Reviewed    : Boolean;
-    Approved    : Boolean;
-}
+
