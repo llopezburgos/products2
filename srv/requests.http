@@ -78,3 +78,6 @@ Content-Type: application/json
 {
     "ClientEmail": "client1@client1.com"
 }
+
+### Get Incidents
+GET http://localhost:4004/odata/v4/sapbackend-exit/Incidents

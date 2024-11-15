@@ -23,6 +23,4 @@ service ManageOrders {
             function getClientTaxRate(ClientEmail : String(65)) returns Decimal(4, 2);
             action   cancelOrder(ClientEmail : String(65))      returns cancelOrderReturn;
         }
-
-
 }
